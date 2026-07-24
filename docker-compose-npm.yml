@@ -1,0 +1,70 @@
+version: '3.8'
+
+# ============================================================================
+# NGINX PROXY MANAGER (NPM) - Docker Compose
+# ============================================================================
+# 
+# This compose file sets up Nginx Proxy Manager (NPM) on port 80, 81, and 443.
+# NPM provides a beautiful web interface to manage reverse proxy hosts and
+# automatically obtain free SSL certificates from Let's Encrypt.
+#
+# ┌─────────────────────────────────────────────────────────────────────┐
+# │  DEFAULT ADMIN CREDENTIALS (change after first login!)              │
+# │  Email:    admin@example.com                                        │
+# │  Password: changeme                                                 │
+# └─────────────────────────────────────────────────────────────────────┘
+#
+# ┌─────────────────────────────────────────────────────────────────────┐
+# │  PORTS USAGE                                                        │
+# │  80  → HTTP (for Let's Encrypt domain validation)                   │
+# │  81  → NPM Admin Panel (web UI)                                    │
+# │  443 → HTTPS (SSL-terminated traffic)                               │
+# └─────────────────────────────────────────────────────────────────────┘
+#
+# ⚠️ IMPORTANT: Ports 80 and 443 must be free on the host.
+#    If you have nginx or Apache running, stop them first:
+#      sudo systemctl stop nginx
+#      sudo systemctl disable nginx
+# ============================================================================
+
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      # HTTP - required for Let's Encrypt HTTP-01 challenge verification
+      - "80:80"
+      # NPM Admin Panel - access via http://YOUR_SERVER_IP:81
+      - "81:81"
+      # HTTPS - serves your apps with SSL certificates
+      - "443:443"
+    volumes:
+      # Persist NPM configuration data (proxy hosts, users, etc.)
+      - ./npm-data:/data
+      # Persist Let's Encrypt SSL certificates
+      - ./npm-letsencrypt:/etc/letsencrypt
+    networks:
+      - npm_network
+
+# ┌─────────────────────────────────────────────────────────────────────┐
+# │  SEAMLESS INTEGRATION WITH EXISTING ASP.NET CORE CONTAINERS         │
+# │                                                                     │
+# │  Your existing ASP.NET Core containers currently run on:            │
+# │    http://YOUR_SERVER_IP:5000                                       │
+# │    http://YOUR_SERVER_IP:8000                                       │
+# │    http://YOUR_SERVER_IP:8080                                       │
+# │                                                                     │
+# │  In the NPM Admin Panel, create Proxy Hosts pointing to:            │
+# │    Domain → YOUR_SERVER_IP : 5000 (or 8000 / 8080)                 │
+# │                                                                     │
+# │  For better performance (internal network instead of going through  │
+# │  the host network stack), you can also connect your existing        │
+# │  containers to this same 'npm_network'.                             │
+# │  See GUIDE.md for detailed instructions.                            │
+# └─────────────────────────────────────────────────────────────────────┘
+
+networks:
+  npm_network:
+    name: npm_network
+    driver: bridge
