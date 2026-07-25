@@ -9,9 +9,7 @@
 
 Watch the complete step-by-step walkthrough:
 
-[![How to Add Free SSL with Let's Encrypt to ASP.NET Core Docker Apps via Nginx Proxy Manager](https://img.youtube.com/vi/C14juEZdPWE/0.jpg)](https://www.youtube.com/watch?v=C14juEZdPWE)
-
-**Title:** [How to Add Free SSL with Let's Encrypt to ASP.NET Core Docker Apps via Nginx Proxy Manager](https://www.youtube.com/watch?v=C14juEZdPWE)  
+**Link:** [How to Add Free SSL with Let's Encrypt to ASP.NET Core Docker Apps via Nginx Proxy Manager](https://www.youtube.com/watch?v=C14juEZdPWE)  
 **Duration:** ~30 minutes  
 **Description:** Covers everything from prerequisites to setup, configuration, and troubleshooting.
 
